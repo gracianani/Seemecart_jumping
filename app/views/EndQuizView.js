@@ -55,11 +55,11 @@ define(["jquery", "backbone", "mustache", "text!templates/EndQuiz.html", "animat
                     self.buttonAnimationScheduler.animateIn();
                 });
                 
-                var title = "超级英雄测试，我有" + this.model.get("score") + "%的嫌疑是" + this.model.get("resultName") + "！你敢试试么？";
+                var title = "遇到极品前任，我有" + this.model.get("score") + "%的可能性跟他（她）复合！你敢试试么？";
                 $('title').text(title);
             },
             restartQuiz: function () {
-                var title = "你是电影里的哪位超级英雄? Heroes, assemble！【性格测试，准得没天理】";
+                var title = "如果遇到极品前任，你会怎么做?【性格测试，准得没天理】";
                 $('title').text(title);
                 Backbone.history.navigate('', { trigger: true, replace: true });
             }

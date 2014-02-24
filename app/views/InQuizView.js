@@ -66,16 +66,16 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
                 }
             },
 
-            showNextQuestion: function () {
-                if (!this.model.isLastQuestion()) {
-                    this.model.goToNextQuestion();
+            showNextQuestion: function ( answerId ) {
+                if (!this.model.isLastQuestion( answerId )) {
+                    this.model.goToNextQuestion(answerId);
                 }
                 else {
                     var self = this;
                     this.$el.find('#inGame-progress-bar').animate({ 'width': '99%' });
                     this.progressAnimationScheduler.animateOut(function () {
                         self.sceneAnimationScheduler.animateOut(function () {
-                            Backbone.history.navigate("result", { trigger: true, replace: true });
+                            Backbone.history.navigate("result/" + self.model.getResultId(answerId), { trigger: true, replace: true });
                         });
                     });
 
@@ -84,8 +84,10 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
 
             onClickQuestionItem: function (e) {
 
-                this.model.processUserAnswer(parseInt(e.target.getAttribute("data-id")));
-                this.showNextQuestion();
+                var answerId = parseInt(e.target.getAttribute("data-id"));
+                this.model.processUserAnswer(answerId);
+
+                this.showNextQuestion(answerId);
             },
 
             onQuestionAnimateComplete: function () {
@@ -100,7 +102,7 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
             },
 
             updateProgress: function () {
-                this.$el.find('#inGame-progress-value').html(this.model.currentQuestionNumber()  + ' / ' + this.model.getQuestionsCount());
+                this.$el.find('#inGame-progress-value').html(this.model.currentQuestionNumber() + ' / ' + this.model.getQuestionsCount());
                 this.$el.find('#inGame-progress-bar').animate({ 'width': this.model.get("progress") + '%' });
 
                 if (this.model.get("progress") > 45) {

@@ -12,8 +12,9 @@ define(["jquery", "backbone"],
             initialize: function (options) {
                 this.userAnswers = options.userAnswers;
                 this.questions = options.questions;
+                this.jumpings = options.jumpings;
                 this.currentQuestion = this.questions.first();
-                this.set("currentQuestionId" ,this.currentQuestion.get("questionId"));
+                this.set("currentQuestionId", this.currentQuestion.get("questionId"));
                 this.currentIndex = 0;
             },
             currentQuestionNumber: function () {
@@ -26,11 +27,16 @@ define(["jquery", "backbone"],
                 }
                 return false;
             },
-            isLastQuestion: function () {
-                if (this.questions.last().get("questionId") == this.get("currentQuestionId")) {
+            isLastQuestion: function (answerId) {
+                var jumping = this.jumpings.findWhere({ questionId: this.get("currentQuestionId"), answerId : answerId });
+                if (jumping.get("nextQuestionId") === 0 ) {
                     return true;
                 }
                 return false;
+            },
+            getResultId : function(answerId) {
+                var jumping = this.jumpings.findWhere({ questionId: this.get("currentQuestionId"), answerId: answerId });
+                return jumping.get("resultId");
             },
             isCurrentQuestionAnswered: function () {
                 return this.userAnswers.isAnswered(this.get("currentQuestionId"));
@@ -42,8 +48,10 @@ define(["jquery", "backbone"],
                 this.set("currentQuestionId", prevQuestion.get("questionId"));
                 this.set("progress", Math.floor(this.currentIndex / this.questions.size() * 100));
             },
-            goToNextQuestion: function () {
-                var nextQuestion = this.questions.at(this.currentIndex + 1);
+            goToNextQuestion: function (answerId) {
+                var question = this.questions.at(this.currentIndex + 1);
+                var jumping = this.jumpings.findWhere({ questionId: this.get("currentQuestionId"), answerId: answerId });
+                var nextQuestion = this.questions.findWhere({ questionId: jumping.get("nextQuestionId") });
                 this.currentQuestion = nextQuestion;
                 this.currentIndex = this.currentIndex + 1;
                 this.set("currentQuestionId", nextQuestion.get("questionId"));
@@ -69,7 +77,6 @@ define(["jquery", "backbone"],
                 } else {
                     return -1;
                 }
-
             },
             getQuestionsCount: function () {
                 return this.questions.size();

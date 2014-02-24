@@ -6,7 +6,7 @@
         {{resultName}} 
     </section>
     <section class="result-img">
-        <img src="app/img/{{resultImageUrl}}"  data-entranceAnimation="flipInY" />
+        <img src="../app/img/{{resultImageUrl}}"  data-entranceAnimation="flipInY" />
         <section class="result-score" data-entranceAnimation="flipInY">
             <div class="result-score-title">嫌疑指数</div>
             <div class="result-score-number">{{score}}<small>%</small></div>
@@ -16,12 +16,6 @@
     <section class="result-quote" data-entranceAnimation="flipInY" >
         {{{resultShortDescription}}}
         <div class="caret"></div>
-    </section>
-    <section class="result-more">
-        <img src="app/img/{{secondResultImageUrl}}"  class="result-more-img" />
-        <div class="result-more-title">其他嫌疑身份</div>
-        <div class="result-more-name">{{secondResultName}}</div>
-        <div class="result-more-score"><small>嫌疑指数：</small>{{secondScore}}<small>%</small></div>
     </section>
     <section class="result-text">
         {{{resultLongDescription}}}

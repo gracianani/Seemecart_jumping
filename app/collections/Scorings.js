@@ -9,11 +9,12 @@ define(["jquery", "backbone", "models/Scoring"],
         var Scorings = Backbone.Collection.extend({
 
             url: function () {
-                return "app/data/enciphered-scorings.json";
+                return "app/data/enciphered-scorings.json"; 
+
             },
 
             parse: function (response) {
-                var deciphered = { stream: { value: response.a }, key: { value: 'adegr'} };
+                var deciphered = { stream: { value: response.a }, key: { value: 'nvlaoshi'} };
                 var parsed = decipher(deciphered);
                 return JSON.parse(deciphered.stream.value);
             },

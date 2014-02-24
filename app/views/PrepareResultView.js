@@ -9,12 +9,13 @@
                 this.waitingTime = 5;
                 this.isTimeUp = false;
                 this.isPrepareFinished = false;
-                
+
                 this.userResult = options.userResult;
-                
-                this.listenTo(this.userResult, "change", this.prepareImages);
+
+                this.prepareImages();
+
                 this.listenTo(this, "render", this.postRender);
-                
+
                 this.render();
 
             },
@@ -35,44 +36,56 @@
             },
             postRender: function () {
                 var self = this;
-                
+
                 this.showAd();
-                this.userResult.calculate();
-                
+
                 this.$el.find("#prepare-progress-bar").animate({
-                    "width":"100%"
-                }, this.waitingTime * 1000, "swing", function(){
+                    "width": "100%"
+                }, this.waitingTime * 3000, "swing", function () {
                     self.isTimeUp = true;
                     self.onPrepareFinish();
                 });
             },
-            prepareImages: function() {
+            prepareImages: function () {
                 var firstResultImg = "image!/app/img/" + this.userResult.get("resultImageUrl");
-                var secondResultImg = "image!/app/img/" + this.userResult.get("secondResultImageUrl");
                 var self = this;
-                require([firstResultImg, secondResultImg], function(first,second){
+                require([firstResultImg], function (first) {
                     self.isPrepareFinished = true;
                     self.onPrepareFinish();
                 });
-                
+
             },
-            onPrepareFinish: function() {
-                if ( this.isPrepareFinished && this.isTimeUp ) {
+            onPrepareFinish: function () {
+                if (this.isPrepareFinished && this.isTimeUp) {
                     this.trigger("prepareFinish");
                 }
             },
-            showAd: function() {
+            showAd: function () {
                 var self = this;
-                
-                this.$el.find("#prepare-ad").html('<a style="display:none!important" id="tanx-a-mm_43537958_5592453_17466966"></a>');
+                var placeHolder = this.$el.find("#prepare-ad");
                 var tanx_s = document.createElement('script');
+                tanx_s.src = 'http://ads1.qadabra.com/t?id=a02b6e08-e724-4844-af55-41aafb13965e&size=300x250';
                 tanx_s.type = 'text/javascript';
-                tanx_s.charset = "gbk";
-                tanx_s.id = "tanx-s-mm_43537958_5592453_17466966";
-                tanx_s.async = true;
-                tanx_s.src = "http://p.tanx.com/ex?i=mm_43537958_5592453_17466966";
-                tanx_h = document.getElementsByTagName("head")[0];
-                if(tanx_h)tanx_h.insertBefore(tanx_s,tanx_h.firstChild);
+
+                if (!document._write) document._write = document.write;
+                document.write = function (str) {
+                    if (str.indexOf("SCRIPT") >= 0) {
+                        var matches = str.match(/SRC=".+"/);
+                        for (var index = 0; index < matches.length; index++) {
+                            var src = matches[index].replace("SRC=\"", "").replace("\"", "");
+                            tanx_s.src = src;
+                            tanx_s.type = 'text/javascript';
+                            placeHolder.append(tanx_s);
+                        }
+                    }
+                    else {
+                        placeHolder.append(str)
+                    }
+                };
+                placeHolder.append(tanx_s);
+                //    tanx_h = document.getElementsByTagName("head")[0];
+                //    if (tanx_h)
+                //        tanx_h.insertBefore(tanx_s, tanx_h.firstChild);
             }
         });
 

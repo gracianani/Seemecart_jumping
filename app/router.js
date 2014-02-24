@@ -8,6 +8,7 @@
     var Questions = require("collections/Questions");
     var UserAnswers = require("collections/UserAnswers");
     var Scorings = require("collections/Scorings");
+    var Jumpings = require("collections/Jumpings");
     var Results = require("collections/Results");
     var UserResult = require("models/UserResult");
     var Quiz = require("models/Quiz");
@@ -22,6 +23,7 @@
     var userAnswers;
     var results;
     var scorings;
+    var jumpings;
     var quiz;
 
     var inQuizView;
@@ -41,6 +43,7 @@
             results = new Results();
             userAnswers = new UserAnswers();
             scorings = new Scorings();
+            jumpings = new Jumpings();
 
             var self = this;
             this.fetchSuccessCount = 0;
@@ -56,7 +59,7 @@
             results.fetch({
                 success: fetchSuccessHandler
             });
-            scorings.fetch({
+            jumpings.fetch({
                 success: fetchSuccessHandler
             });
 
@@ -65,7 +68,7 @@
         routes: {
             "": "index",
             "question/:questionId": "startQuiz",
-            "result": "result"
+            "result/:resultId": "result"
         },
 
         prepare: function () {
@@ -75,7 +78,7 @@
         index: function () {
             console.log("Welcome to your / route.");
             startQuizView.render();
-            if (!(questions.isEmpty() || results.isEmpty() || scorings.isEmpty())) {
+            if (!(questions.isEmpty() || results.isEmpty() || jumpings.isEmpty())) {
                 this.prepare();
             }
         },
@@ -93,16 +96,17 @@
             }
             quiz = new Quiz({
                 questions: questions,
+                jumpings: jumpings,
                 userAnswers: userAnswers
             });
             inQuizView = new InQuizView({ model: quiz });
         },
-        result: function () {
-            if (userAnswers.length > 0) {
-                var userResult = new UserResult({ results: results, scorings: scorings, userAnswers: userAnswers });
-                prepareResultView = new PrepareResultView({ userResult: userResult });
-                endQuizView = new EndQuizView({ model: userResult, prepareResultView: prepareResultView});
-                
+        result: function (resultId) {
+            if ( typeof(resultId) !== 'undefined' ) {
+                var userResult = new UserResult({ results: results, resultId : resultId  });
+                prepareResultView = new PrepareResultView({ userResult: userResult});
+                endQuizView = new EndQuizView({ model: userResult, prepareResultView: prepareResultView });
+
             } else {
                 Backbone.history.navigate('', { trigger: true, replace: true });
             }
