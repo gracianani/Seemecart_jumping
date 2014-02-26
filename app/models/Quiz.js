@@ -16,6 +16,7 @@ define(["jquery", "backbone"],
                 this.currentQuestion = this.questions.first();
                 this.set("currentQuestionId", this.currentQuestion.get("questionId"));
                 this.currentIndex = 0;
+                this.questionSize = 11;
             },
             currentQuestionNumber: function () {
                 // current question number is current index + 1
@@ -28,13 +29,13 @@ define(["jquery", "backbone"],
                 return false;
             },
             isLastQuestion: function (answerId) {
-                var jumping = this.jumpings.findWhere({ questionId: this.get("currentQuestionId"), answerId : answerId });
-                if (jumping.get("nextQuestionId") === 0 ) {
+                var jumping = this.jumpings.findWhere({ questionId: this.get("currentQuestionId"), answerId: answerId });
+                if (jumping.get("nextQuestionId") === 0) {
                     return true;
                 }
                 return false;
             },
-            getResultId : function(answerId) {
+            getResultId: function (answerId) {
                 var jumping = this.jumpings.findWhere({ questionId: this.get("currentQuestionId"), answerId: answerId });
                 return jumping.get("resultId");
             },
@@ -55,7 +56,7 @@ define(["jquery", "backbone"],
                 this.currentQuestion = nextQuestion;
                 this.currentIndex = this.currentIndex + 1;
                 this.set("currentQuestionId", nextQuestion.get("questionId"));
-                this.set("progress", Math.floor(this.currentIndex / this.questions.size() * 100));
+                this.set("progress", Math.floor(this.currentIndex / this.questionSize * 100));
             },
             processUserAnswer: function (answerId) {
                 if (this.isCurrentQuestionAnswered()) {
@@ -79,13 +80,13 @@ define(["jquery", "backbone"],
                 }
             },
             getQuestionsCount: function () {
-                return this.questions.size();
+                return this.questionSize;
             },
             resetQuiz: function () {
                 var questionId = this.questions.first().get("questionId");
                 this.set("currentQuestionId", questionId);
                 this.currentIndex = this.questions.indexOf(this.questions.findWhere({ "questionId": questionId }));
-                this.set("progress", Math.floor(this.currentIndex / this.questions.size() * 100));
+                this.set("progress", Math.floor(this.currentIndex / this.questionSize * 100));
             }
         });
 

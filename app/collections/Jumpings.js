@@ -13,7 +13,7 @@ define(["jquery", "backbone", "models/Jumping"],
             },
 
             parse: function (response) {
-                var deciphered = { stream: { value: response.a }, key: { value: 'jipin'} };
+                var deciphered = { stream: { value: response.a }, key: { value: 'xingzuo'} };
                 var parsed = decipher(deciphered);
                 return JSON.parse(deciphered.stream.value);
             },
