@@ -105,7 +105,7 @@ module.exports = function (grunt) {
             release: {
                 files: [
           { src: ["app/**"], dest: "dist/" },
-          { src: "vendor/**", dest: "dist/" }
+          { src: ["app/img/favicon.ico"], dest: "dist/" }
         ]
             }
         },

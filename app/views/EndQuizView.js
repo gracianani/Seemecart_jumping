@@ -18,6 +18,7 @@ define(["jquery", "backbone", "mustache", "text!templates/EndQuiz.html", "animat
                 this.listenTo(this.prepareResultView, "prepareFinish", this.render);
 
                 this.listenTo(this, "render", this.postRender);
+                _hmt.push(['_trackPageview', '/result']);
 
             },
 
@@ -55,13 +56,39 @@ define(["jquery", "backbone", "mustache", "text!templates/EndQuiz.html", "animat
                     self.buttonAnimationScheduler.animateIn();
                 });
                 
-                var title = "遇到极品前任，我有" + this.model.get("score") + "%的可能性跟他（她）复合！你敢试试么？";
+               var title = this.model.get("resultShareText") + "—" + this.model.get("resultName") + ": 「" + this.model.get("resultShortDescription") + "」 " +this.model.get("scoreName") +this.model.get("score") + "," + this.model.get("resutlShareTextEnd");
                 $('title').text(title);
+                
+                this.showAd();
             },
             restartQuiz: function () {
-                var title = "如果遇到极品前任，你会怎么做?【性格测试，准得没天理】";
-                $('title').text(title);
+                $('title').text(this.model.get("defaultShareText"));
                 Backbone.history.navigate('', { trigger: true, replace: true });
+                _hmt.push(['_trackEvent', 'restart', 'click']);
+            },
+            showAd: function() {
+                var self = this;
+                var placeHolder = this.$el.find("#endQuizAd");
+                var tanx_s = document.createElement('script');
+                tanx_s.src = 'http://ads1.qadabra.com/t?id=a02b6e08-e724-4844-af55-41aafb13965e&size=300x250';
+                tanx_s.type = 'text/javascript';
+
+                if (!document._write) document._write = document.write;
+                document.write = function (str) {
+                    if (str.indexOf("SCRIPT") >= 0) {
+                        var matches = str.match(/SRC=".+"/);
+                        for (var index = 0; index < matches.length; index++) {
+                            var src = matches[index].replace("SRC=\"", "").replace("\"", "");
+                            tanx_s.src = src;
+                            tanx_s.type = 'text/javascript';
+                            placeHolder.append(tanx_s);
+                        }
+                    }
+                    else {
+                        placeHolder.append(str)
+                    }
+                };
+                placeHolder.append(tanx_s);
             }
 
         });

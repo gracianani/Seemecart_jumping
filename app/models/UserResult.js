@@ -10,6 +10,8 @@ define(["jquery", "backbone"],
                 this.resultRepo = options.results;
                 this.resultId = parseInt(options.resultId);
                 this.setResult();
+                //add config
+                this.set(options.config.toJSON());
             },
             getResultDetailByResultId: function (resultId, resultScore) {
                 var resultDetail = this.resultRepo.findWhere({ resultId: resultId }).clone();

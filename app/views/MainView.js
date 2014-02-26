@@ -14,6 +14,8 @@ define(["jquery", "backbone","animationscheduler"],
                 if ( this.is_weixin() ) {
                     this.$el.removeClass('notWechat').addClass('wechat');
                 }
+                this.config = options.config;
+                
                 this.disableSelection();
                 this.helpButtonAnimationScheduler = new AnimationScheduler( this.$el.find("#topBar-help") );
                 this.helpButtonAnimationScheduler.animateIn();
@@ -38,6 +40,7 @@ define(["jquery", "backbone","animationscheduler"],
             },
             showShareOverlay: function(){
                 this.$el.find("#shareOverlay").removeClass("hidden");
+                _hmt.push(['_trackEvent', 'share', 'click']);
             },
             disableSelection: function() {
                 this.$el.css({
@@ -81,6 +84,10 @@ define(["jquery", "backbone","animationscheduler"],
                 } else {
                     return false;
                 }
+            },
+            onConfigFetched: function(){
+                this.$el.find("#topBar h1 span").text(this.config.get("quizName"));
+                $('title').text(this.config.get("defaultShareText"));
             }
         });
         // Returns the View class

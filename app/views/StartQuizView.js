@@ -12,6 +12,7 @@ define(["jquery", "backbone", "mustache", "text!templates/StartQuiz.html", "anim
             // View constructor
             initialize: function () {
                 this.listenTo(this, "render", this.postRender);
+                _hmt.push(['_trackPageview', '/start']);
             },
 
             // View Event Handlers
@@ -37,7 +38,7 @@ define(["jquery", "backbone", "mustache", "text!templates/StartQuiz.html", "anim
 
             },
             postRender: function() {
-                this.sceneAnimationScheduler = new AnimationScheduler(this.$el.find("#sceneStart"));
+                this.sceneAnimationScheduler = new AnimationScheduler(this.$el.find("#start-cover"));
                 this.buttonAnimationScheduler = new AnimationScheduler(this.$el.find("#start-startButton,#start-shareButton"), {"isSequential":true});
                 
                 this.sceneAnimationScheduler.animateIn();

@@ -1,0 +1,27 @@
+{
+    "quizName":"你的内心是什么星座?",
+    "defaultShareText": "测测你的内心是什么星座？「西米测试」",
+    
+    "preparingText":"神秘的星星正在转动...",
+    "preparingTime":5000,
+
+    "resultGuideWord":"西米星座露偷偷告诉你<br />你的内心其实是",
+    "scoreName":"相似指数",
+    "secondGuideWord":"其他星座",
+    "resultShareText": "我内心真正的星座是",
+    "resutlShareTextEnd":"，你也来试试吧？",
+    
+    "recommends":[
+    {
+        "quizUrl":"http://quiz.seemeloo.com/sushigirl",
+        "quizName":"哪位女老师是你心头所好？",
+        "quizImgUrl":"http://quiz.seemeloo.com/img/quiz2.png"
+    },
+    {
+        "quizUrl":"http://quiz.seemeloo.com/sushigirl",
+        "quizName":"四方魔法学院入学测试",
+        "quizImgUrl":"http://quiz.seemeloo.com/img/quiz3.png"
+    }
+    ]
+    
+}

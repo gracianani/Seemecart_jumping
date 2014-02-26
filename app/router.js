@@ -12,6 +12,7 @@
     var Results = require("collections/Results");
     var UserResult = require("models/UserResult");
     var Quiz = require("models/Quiz");
+    var Config = require("models/Config");
 
     var InQuizView = require("views/InQuizView");
     var StartQuizView = require("views/StartQuizView");
@@ -25,7 +26,8 @@
     var scorings;
     var jumpings;
     var quiz;
-
+    var config;
+    
     var inQuizView;
     var startQuizView;
     var prepareResultView;
@@ -37,19 +39,21 @@
     module.exports = Backbone.Router.extend({
 
         initialize: function () {
-            startQuizView = new StartQuizView();
-            mainView = new MainView();
             questions = new Questions();
             results = new Results();
             userAnswers = new UserAnswers();
             scorings = new Scorings();
             jumpings = new Jumpings();
+            config = new Config();
+            
+            startQuizView = new StartQuizView();
+            mainView = new MainView({ config:config });
 
             var self = this;
             this.fetchSuccessCount = 0;
             var fetchSuccessHandler = function () {
                 self.fetchSuccessCount++;
-                if (self.fetchSuccessCount == 3) {
+                if (self.fetchSuccessCount == 4) {
                     self.prepare();
                 }
             };
@@ -60,6 +64,9 @@
                 success: fetchSuccessHandler
             });
             jumpings.fetch({
+                success: fetchSuccessHandler
+            });
+            config.fetch({
                 success: fetchSuccessHandler
             });
 
@@ -73,12 +80,13 @@
 
         prepare: function () {
             startQuizView.ready();
+            mainView.onConfigFetched();
         },
 
         index: function () {
             console.log("Welcome to your / route.");
             startQuizView.render();
-            if (!(questions.isEmpty() || results.isEmpty() || jumpings.isEmpty())) {
+            if (!(questions.isEmpty() || results.isEmpty() || jumpings.isEmpty() || !config.has("quizName"))) {
                 this.prepare();
             }
         },
@@ -102,13 +110,14 @@
             inQuizView = new InQuizView({ model: quiz });
         },
         result: function (resultId) {
-            if ( typeof(resultId) !== 'undefined' ) {
-                var userResult = new UserResult({ results: results, resultId : resultId  });
-                prepareResultView = new PrepareResultView({ userResult: userResult});
-                endQuizView = new EndQuizView({ model: userResult, prepareResultView: prepareResultView });
+            if ( typeof(resultId) !== 'undefined' && userAnswers.length > 0 ) {
+                var userResult = new UserResult({ results: results, resultId : resultId , config:config });
+                prepareResultView = new PrepareResultView({ userResult:userResult,config:config });
+                endQuizView = new EndQuizView({ model: userResult, prepareResultView: prepareResultView , config:config });
 
             } else {
                 Backbone.history.navigate('', { trigger: true, replace: true });
+                _hmt.push(['_trackPageview', '/resultRedirectToStart']);
             }
 
         }
