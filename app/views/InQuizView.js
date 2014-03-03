@@ -15,6 +15,7 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
                 this.listenTo(this.model, "change", this.onModelChange);
                 this.listenTo(this, "render", this.postRender);
                 _hmt.push(['_trackPageview', '/inQuiz']);
+
                 this.render();
             },
 
@@ -25,7 +26,9 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
 
                 "click #inGame-next": "showNextQuestion",
 
-                "click .question-item": "onClickQuestionItem"
+                "click .question-item": "onClickQuestionItem",
+                
+                "click .question-item>img": "onClickQuestionItem"
 
             },
 
@@ -66,16 +69,17 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
                 }
             },
 
-            showNextQuestion: function ( answerId ) {
-                if (!this.model.isLastQuestion( answerId )) {
-                    this.model.goToNextQuestion(answerId);
+            showNextQuestion: function () {
+                $('body').scrollTop(0);
+                if (!this.model.isLastQuestion()) {
+                    this.model.goToNextQuestion();
                 }
                 else {
                     var self = this;
                     this.$el.find('#inGame-progress-bar').animate({ 'width': '99%' });
                     this.progressAnimationScheduler.animateOut(function () {
                         self.sceneAnimationScheduler.animateOut(function () {
-                            Backbone.history.navigate("result/" + self.model.getResultId(answerId), { trigger: true, replace: true });
+                            Backbone.history.navigate("result", { trigger: true, replace: true });
                         });
                     });
 
@@ -83,11 +87,10 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
             },
 
             onClickQuestionItem: function (e) {
-
-                var answerId = parseInt(e.target.getAttribute("data-id"));
-                this.model.processUserAnswer(answerId);
-
-                this.showNextQuestion(answerId);
+                e.preventDefault();
+                e.stopPropagation();
+                this.model.processUserAnswer(parseInt(e.target.getAttribute("data-id")));
+                this.showNextQuestion();
             },
 
             onQuestionAnimateComplete: function () {
@@ -102,7 +105,7 @@ define(["jquery", "backbone", "mustache", "text!templates/InQuiz.html", "animati
             },
 
             updateProgress: function () {
-                this.$el.find('#inGame-progress-value').html(this.model.currentQuestionNumber() + ' / ' + this.model.getQuestionsCount());
+                this.$el.find('#inGame-progress-value').html(this.model.currentQuestionNumber()  + ' / ' + this.model.getQuestionsCount());
                 this.$el.find('#inGame-progress-bar').animate({ 'width': this.model.get("progress") + '%' });
 
                 if (this.model.get("progress") > 45) {

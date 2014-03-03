@@ -1,0 +1,10 @@
+<div class="question clearfix imageQuestion">
+    <div class="question-title">
+        {{questionText}}
+    </div>
+    <ul class="question-list">
+        {{#answers}}
+        <li class="question-item imageQuestion-item" data-id="{{answerId}}"><img src="app/img/{{answerImage}}" /></li>
+        {{/answers}}
+    </ul>
+</div>
